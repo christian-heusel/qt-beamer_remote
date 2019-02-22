@@ -19,6 +19,8 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         _commands(
             {
                 {"avMute","pic.mute"},
+                {"inputSelector","input"},
+                {"powerSwitch","power"}
             }
         )
     {
@@ -59,7 +61,7 @@ void BeamerFernbedienung::establishConnection() {
 
 void BeamerFernbedienung::sendCommand(const QString& cmd, const QString& value) {
     QString pre = "*";
-    QString suf = "=" + value +" \r";
+    QString suf = "=" + value + "\r";
     QByteArray data = pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
     if(_beamerConnection->state() == QAbstractSocket::ConnectedState) {
         _beamerConnection->write(IntToArray(data.size()));
@@ -67,8 +69,7 @@ void BeamerFernbedienung::sendCommand(const QString& cmd, const QString& value) 
     }
 }
 
-void BeamerFernbedienung::on_avMute_clicked()
-{
+void BeamerFernbedienung::on_avMute_clicked() {
     if(_muted) {
         _ui->avMute->setText("Mute");
     }
@@ -79,8 +80,7 @@ void BeamerFernbedienung::on_avMute_clicked()
     sendCommand(_commands["avMute"], QString::number(_muted));
 }
 
-void BeamerFernbedienung::on_powerSwitch_clicked()
-{
+void BeamerFernbedienung::on_powerSwitch_clicked() {
     if(not _power) {
         _ui->powerSwitch->setText("Anschalten");
     }
@@ -88,7 +88,11 @@ void BeamerFernbedienung::on_powerSwitch_clicked()
         _ui->powerSwitch->setText("Ausschalten");
     }
     _power = not _power;
-    sendCommand(_commands["avMute"], QString::number(_power));
+    sendCommand(_commands["powerSwitch"], QString::number(_power));
+}
+
+void BeamerFernbedienung::on_inputSelector_activated(int input) {
+     sendCommand(_commands["inputSelector"], QString::number(input));
 }
 
 QString BeamerFernbedienung::full_addr() const {

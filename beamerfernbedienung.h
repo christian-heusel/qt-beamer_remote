@@ -30,6 +30,7 @@ public:
 private slots:
     void on_avMute_clicked();
     void on_powerSwitch_clicked();
+    void on_inputSelector_activated(int input);
 
 private:
     unique_ptr<Ui::BeamerFernbedienung> _ui;

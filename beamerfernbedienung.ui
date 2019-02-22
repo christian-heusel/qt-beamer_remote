@@ -191,7 +191,7 @@
       <item>
        <widget class="QPushButton" name="avMute">
         <property name="text">
-         <string>Av-Mute</string>
+         <string>NaN</string>
         </property>
        </widget>
       </item>
