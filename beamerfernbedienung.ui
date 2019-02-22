@@ -64,14 +64,14 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="powerSwitch">
         <property name="text">
-         <string>An/Aus</string>
+         <string>NaN</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="inputSelector"/>
+       <widget class="QComboBox" name="inputSelector"/>
       </item>
       <item>
        <spacer name="horizontalSpacer_7">
@@ -117,7 +117,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QSpinBox" name="lensSelector"/>
+       <widget class="QComboBox" name="lensSelector"/>
       </item>
       <item>
        <spacer name="horizontalSpacer_2">
@@ -189,7 +189,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="avMute">
         <property name="text">
          <string>Av-Mute</string>
         </property>
