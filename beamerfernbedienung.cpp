@@ -12,8 +12,8 @@ QByteArray IntToArray(qint32 source) {
 BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
     :
         QWidget(parent),
-        _ui(make_unique<Ui::BeamerFernbedienung>()),
         _beamerConnection(make_unique<QTcpSocket>(this)),
+        _ui(make_unique<Ui::BeamerFernbedienung>()),
         // _beamerAddress("192.168.0.100"),
         _beamerAddress("127.0.0.1"),
         _beamerPort(7000),
@@ -27,6 +27,7 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
 
     {
         _ui->setupUi(this);
+        setWindowTitle("Beamerfernbedienung");
         establishConnection();
         // Setting up all inputs
         _ui->inputSelector->addItem(tr("HDMI 1"));
@@ -51,14 +52,14 @@ void BeamerFernbedienung::establishConnection() {
     if(_beamerConnection->waitForConnected()) {
         QMessageBox::information(
                 this,
-                tr("Application Name"),
+                tr("Beamerfernbedienung"),
                 "Successfully connected to " + full_addr() + "!");
     }
     else {
         QString error = _beamerConnection->errorString();
         QMessageBox::critical(
                 this,
-                tr("Application Name"),
+                tr("Beamerfernbedienung"),
                 "Error while connecting to " + full_addr() + "!\n"
                 + error);
     }
@@ -69,6 +70,7 @@ void BeamerFernbedienung::sendCommand(const QString& cmd, const QString& value) 
     QString pre = "*";
     QString suf = "=" + value + "\r";
     QByteArray data = pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
+    qInfo() << "DEBUG:"<< pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
     if(_beamerConnection->state() == QAbstractSocket::ConnectedState) {
         _beamerConnection->write(IntToArray(data.size()));
         _beamerConnection->write(data);

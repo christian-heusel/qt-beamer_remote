@@ -4,6 +4,7 @@
 // QT includes
 #include <QtNetwork/QHostAddress>
 #include <QtNetwork/QTcpSocket>
+#include <QVBoxLayout>
 #include <QComboBox>
 #include <QMessageBox>
 #include <QWidget>
@@ -35,8 +36,8 @@ private slots:
     void on_reconnectButton_clicked();
 
 private:
-    unique_ptr<Ui::BeamerFernbedienung> _ui;
     unique_ptr<QTcpSocket> _beamerConnection;
+    unique_ptr<Ui::BeamerFernbedienung> _ui;
 
     const QHostAddress _beamerAddress;
     const quint16 _beamerPort;
