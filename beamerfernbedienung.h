@@ -7,6 +7,7 @@
 #include <QComboBox>
 #include <QMessageBox>
 #include <QWidget>
+#include <QObject>
 #include <QtCore>
 #include <QMap>
 
@@ -31,6 +32,7 @@ private slots:
     void on_avMute_clicked();
     void on_powerSwitch_clicked();
     void on_inputSelector_activated(int input);
+    void on_reconnectButton_clicked();
 
 private:
     unique_ptr<Ui::BeamerFernbedienung> _ui;
@@ -42,6 +44,7 @@ private:
 
     bool _power;
     bool _muted;
+    bool _connected;
 
     void establishConnection();
     void sendCommand(const QString& cmd, const QString& value);

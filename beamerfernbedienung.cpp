@@ -8,6 +8,7 @@ QByteArray IntToArray(qint32 source) {
     return temp;
 }
 
+
 BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
     :
         QWidget(parent),
@@ -23,6 +24,7 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
                 {"powerSwitch","power"}
             }
         )
+
     {
         _ui->setupUi(this);
         establishConnection();
@@ -39,6 +41,9 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         _muted = true;
         // Setting all textfields
         /* TODO */
+        if(_connected) {
+            _ui->reconnectButton->setEnabled(false);
+        }
     }
 
 void BeamerFernbedienung::establishConnection() {
@@ -57,6 +62,7 @@ void BeamerFernbedienung::establishConnection() {
                 "Error while connecting to " + full_addr() + "!\n"
                 + error);
     }
+    _connected = _beamerConnection->canReadLine();
 }
 
 void BeamerFernbedienung::sendCommand(const QString& cmd, const QString& value) {
@@ -76,19 +82,23 @@ void BeamerFernbedienung::on_avMute_clicked() {
     else {
         _ui->avMute->setText("Unmute");
     }
-    _muted = not _muted;
+    _muted = ! _muted;
     sendCommand(_commands["avMute"], QString::number(_muted));
 }
 
 void BeamerFernbedienung::on_powerSwitch_clicked() {
-    if(not _power) {
+    if(! _power) {
         _ui->powerSwitch->setText("Anschalten");
     }
     else {
         _ui->powerSwitch->setText("Ausschalten");
     }
-    _power = not _power;
+    _power = ! _power;
     sendCommand(_commands["powerSwitch"], QString::number(_power));
+}
+
+void BeamerFernbedienung::on_reconnectButton_clicked() {
+    establishConnection();
 }
 
 void BeamerFernbedienung::on_inputSelector_activated(int input) {
