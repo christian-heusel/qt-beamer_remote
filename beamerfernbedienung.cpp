@@ -70,7 +70,9 @@ void BeamerFernbedienung::sendCommand(const QString& cmd, const QString& value) 
     QString pre = "*";
     QString suf = "=" + value + "\r";
     QByteArray data = pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
+    #ifdef QT_DEBUG
     qInfo() << "DEBUG:"<< pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
+    #endif
     if(_beamerConnection->state() == QAbstractSocket::ConnectedState) {
         _beamerConnection->write(IntToArray(data.size()));
         _beamerConnection->write(data);

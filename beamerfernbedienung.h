@@ -4,12 +4,10 @@
 // QT includes
 #include <QtNetwork/QHostAddress>
 #include <QtNetwork/QTcpSocket>
-#include <QVBoxLayout>
-#include <QComboBox>
 #include <QMessageBox>
+#include <QComboBox>
 #include <QWidget>
 #include <QObject>
-#include <QtCore>
 #include <QMap>
 
 // Includes from the Standard Template Library
