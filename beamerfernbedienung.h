@@ -47,6 +47,7 @@ private:
 
     void establishConnection();
     void sendCommand(const QString& cmd, const QString& value);
+    void readAnswer();
     QString full_addr() const;
 };
 
