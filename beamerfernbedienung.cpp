@@ -1,5 +1,4 @@
 #include "beamerfernbedienung.h"
-#include "ui_beamerfernbedienung.h"
 
 QByteArray IntToArray(qint32 source) {
     QByteArray temp;
@@ -13,7 +12,7 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
     :
         QWidget(parent),
         _beamerConnection(make_unique<QTcpSocket>(this)),
-        _ui(make_unique<Ui::BeamerFernbedienung>()),
+        _ui(new Ui::BeamerFernbedienung()),
         // _beamerAddress("192.168.0.100"),
         _beamerAddress("127.0.0.1"),
         _beamerPort(7000),
@@ -23,8 +22,8 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
                 {"inputSelector","input"},
                 {"powerSwitch","power"}
             }
-        )
-
+        ),
+        _lensSelectorSlotNames( )
     {
         _ui->setupUi(this);
         setWindowTitle("Beamerfernbedienung");
@@ -36,20 +35,45 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         _ui->inputSelector->addItem(tr("VGA"));
         _ui->inputSelector->addItem(tr("Component"));
         _ui->inputSelector->addItem(tr("HDBaseT"));
+        // Setting lens Names
+        _ui->lensSelector->setEditable(true);
+        loadSettings();
+        for(const auto& name : _lensSelectorSlotNames) {
+            _ui->lensSelector->addItem(name);
+        }
         // Checking current status
-        /* TODO */
         _power = true;
         _muted = true;
         // Setting all textfields
-        /* TODO */
-        if(_connected) {
-            _ui->reconnectButton->setEnabled(false);
-        }
     }
+
+void BeamerFernbedienung::loadSettings() {
+    QString path = "/home/chris/Documents/QTCreator/BeamerFernbedienung/settings.ini";
+    _settings = make_unique<QSettings>(path, QSettings::NativeFormat);
+    // Read in the Slot names
+    int size = _settings->beginReadArray("lensSelectorSlotNames");
+    for(int i = 0; i < size; i++) {
+        _settings->setArrayIndex(i);
+        _lensSelectorSlotNames.append(_settings->value("Slot").toString());
+    }
+    _settings->endArray();
+}
+
+void BeamerFernbedienung::saveSettings() {
+    qint8 counter = 0;
+    _settings->beginWriteArray("lensSelectorSlotNames");
+    for(const auto& name : _lensSelectorSlotNames) {
+        _settings->setArrayIndex(counter++);
+        if(_settings->value("Slot").toString() != name)
+            _settings->setValue("Slot", name);
+    }
+    _settings->endArray();
+}
 
 void BeamerFernbedienung::establishConnection() {
     _beamerConnection->connectToHost(_beamerAddress, _beamerPort);
     if(_beamerConnection->waitForConnected()) {
+        _connected =true;
         QMessageBox::information(
                 this,
                 tr("Beamerfernbedienung"),
@@ -57,22 +81,35 @@ void BeamerFernbedienung::establishConnection() {
     }
     else {
         QString error = _beamerConnection->errorString();
+        _connected = false;
         QMessageBox::critical(
                 this,
                 tr("Beamerfernbedienung"),
                 "Error while connecting to " + full_addr() + "!\n"
                 + error);
     }
-    _connected = _beamerConnection->canReadLine();
+    if(_connected) {
+        _ui->reconnectButton->setEnabled(false);
+    }
 }
 
-void BeamerFernbedienung::readAnswer(){
+QString BeamerFernbedienung::readAnswer(){
     QByteArray buffer;
     buffer.append(_beamerConnection->readAll());
-    QString test = buffer;
+    const QString answer = buffer;
     #ifdef QT_DEBUG
-    qInfo() << "DEBUG: answer <- " << test;
+    qInfo() << "DEBUG: answer  <- " << answer;
     #endif
+    // const QStringRef executionStatus(&answer,0,3);
+    // if(executionStatus.contains("ACK", Qt::CaseInsensitive))
+    //     qInfo() << "Yay";
+    // else if (executionStatus.contains("NAK", Qt::CaseInsensitive)) {
+    //     qInfo() << "Nayy";
+    // }
+    // QString number = answer.back();
+    // int result = number.toInt();
+    // qInfo() << result << number;
+    return answer;
 }
 
 void BeamerFernbedienung::sendCommand(const QString& cmd, const QString& value) {
@@ -125,4 +162,15 @@ QString BeamerFernbedienung::full_addr() const {
     return _beamerAddress.toString() + ":" + QString::number(_beamerPort);
 }
 
-BeamerFernbedienung::~BeamerFernbedienung(){}
+void BeamerFernbedienung::on_lensSelector_currentIndexChanged(const QString &arg1) {
+}
+
+void BeamerFernbedienung::on_lensSelector_currentTextChanged(const QString& arg1) {
+   auto index = _ui->lensSelector->currentIndex();
+   _lensSelectorSlotNames[index] = arg1;
+}
+
+BeamerFernbedienung::~BeamerFernbedienung(){
+    saveSettings();
+    delete _ui;
+}

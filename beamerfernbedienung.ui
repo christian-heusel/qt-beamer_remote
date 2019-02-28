@@ -62,7 +62,7 @@
         </font>
        </property>
        <property name="frameShape">
-        <enum>QFrame::Panel</enum>
+        <enum>QFrame::WinPanel</enum>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
@@ -164,7 +164,20 @@
         </spacer>
        </item>
        <item>
-        <widget class="QComboBox" name="lensSelector"/>
+        <widget class="QComboBox" name="lensSelector">
+         <property name="minimumSize">
+          <size>
+           <width>130</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+         <property name="insertPolicy">
+          <enum>QComboBox::InsertAtCurrent</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer_2">
