@@ -18,9 +18,10 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         _beamerPort(7000),
         _commands(
             {
-                {"avMute","pic.mute"},
-                {"inputSelector","input"},
-                {"powerSwitch","power"}
+                {"avMute", "pic.mute"},
+                {"inputSelector", "input"},
+                {"powerSwitch", "power"},
+                {"lensSelector", "recall.mem"}
             }
         ),
         _lensSelectorSlotNames( )
@@ -162,12 +163,14 @@ QString BeamerFernbedienung::full_addr() const {
     return _beamerAddress.toString() + ":" + QString::number(_beamerPort);
 }
 
-void BeamerFernbedienung::on_lensSelector_currentIndexChanged(const QString &arg1) {
-}
-
 void BeamerFernbedienung::on_lensSelector_currentTextChanged(const QString& arg1) {
    auto index = _ui->lensSelector->currentIndex();
    _lensSelectorSlotNames[index] = arg1;
+}
+
+void BeamerFernbedienung::on_lensSelector_activated(int index) {
+    sendCommand(_commands["lensSelector"],QString::number(index));
+    readAnswer();
 }
 
 BeamerFernbedienung::~BeamerFernbedienung(){

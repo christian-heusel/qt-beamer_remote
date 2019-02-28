@@ -37,10 +37,8 @@ private slots:
     void on_powerSwitch_clicked();
     void on_inputSelector_activated(int input);
     void on_reconnectButton_clicked();
-
-    void on_lensSelector_currentIndexChanged(const QString &arg1);
-
     void on_lensSelector_currentTextChanged(const QString &arg1);
+    void on_lensSelector_activated(int index);
 
 private:
     unique_ptr<QTcpSocket> _beamerConnection;
@@ -58,7 +56,6 @@ private:
 
     void establishConnection();
     void sendCommand(const QString& cmd, const QString& value);
-    void lensSelector_currentTextChanged(const QString& input);
     void loadSettings();
     void saveSettings();
     QString readAnswer();
