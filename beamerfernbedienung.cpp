@@ -24,38 +24,50 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
                 {"lensSelector", "recall.mem"}
             }
         ),
-        _lensSelectorSlotNames( )
+        _lensSelectorSlotNames(
+            {{
+                "Test0",
+                "Test1",
+                "Test2",
+                "Test3",
+            }}
+        )
     {
         _ui->setupUi(this);
         setWindowTitle("Beamerfernbedienung");
         establishConnection();
         // Setting up all inputs
-        _ui->inputSelector->addItem(tr("HDMI 1"));
-        _ui->inputSelector->addItem(tr("HDMI 2"));
-        _ui->inputSelector->addItem(tr("DVI-D"));
-        _ui->inputSelector->addItem(tr("VGA"));
-        _ui->inputSelector->addItem(tr("Component"));
-        _ui->inputSelector->addItem(tr("HDBaseT"));
-        // Setting lens Names
-        _ui->lensSelector->setEditable(true);
+        _ui->inputSelector->addItems(
+            {
+                "HDMI 1",
+                "HDMI 2",
+                "DVI-D",
+                "VGA",
+                "Component",
+                "HDBaseT"
+            }
+        );
+        _ui->lensSelector->setEditable(false);
         loadSettings();
+        // Setting lens Names
         for(const auto& name : _lensSelectorSlotNames) {
             _ui->lensSelector->addItem(name);
         }
         // Checking current status
         _power = true;
         _muted = true;
-        // Setting all textfields
     }
 
 void BeamerFernbedienung::loadSettings() {
-    QString path = "/home/chris/Documents/QTCreator/BeamerFernbedienung/settings.ini";
-    _settings = make_unique<QSettings>(path, QSettings::NativeFormat);
+    _settings = make_unique<QSettings>();
+    _settings->setPath(QSettings::IniFormat, QSettings::UserScope, "settings.ini");
     // Read in the Slot names
     int size = _settings->beginReadArray("lensSelectorSlotNames");
+    if(_lensSelectorSlotNames.size() < size)
+        _lensSelectorSlotNames.resize(size);
     for(int i = 0; i < size; i++) {
         _settings->setArrayIndex(i);
-        _lensSelectorSlotNames.append(_settings->value("Slot").toString());
+        _lensSelectorSlotNames[i] = _settings->value("Slot").toString();
     }
     _settings->endArray();
 }
@@ -65,7 +77,8 @@ void BeamerFernbedienung::saveSettings() {
     _settings->beginWriteArray("lensSelectorSlotNames");
     for(const auto& name : _lensSelectorSlotNames) {
         _settings->setArrayIndex(counter++);
-        if(_settings->value("Slot").toString() != name)
+        if(_settings->value("Slot").toString() != name and
+           name != "")
             _settings->setValue("Slot", name);
     }
     _settings->endArray();
@@ -151,6 +164,7 @@ void BeamerFernbedienung::on_powerSwitch_clicked() {
 }
 
 void BeamerFernbedienung::on_reconnectButton_clicked() {
+    saveSettings();
     establishConnection();
 }
 
