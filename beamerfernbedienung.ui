@@ -136,6 +136,22 @@
       </layout>
      </item>
      <item>
+      <widget class="QComboBox" name="lensSelector">
+       <property name="minimumSize">
+        <size>
+         <width>130</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+       <property name="insertPolicy">
+        <enum>QComboBox::InsertAtCurrent</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="verticalSpacer_5">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -162,22 +178,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item>
-        <widget class="QComboBox" name="lensSelector">
-         <property name="minimumSize">
-          <size>
-           <width>130</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="editable">
-          <bool>true</bool>
-         </property>
-         <property name="insertPolicy">
-          <enum>QComboBox::InsertAtCurrent</enum>
-         </property>
-        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer_2">
@@ -328,9 +328,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>reconnectButton</tabstop>
-  <tabstop>powerSwitch</tabstop>
-  <tabstop>inputSelector</tabstop>
-  <tabstop>lensSelector</tabstop>
   <tabstop>avMute</tabstop>
  </tabstops>
  <resources/>

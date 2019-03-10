@@ -47,7 +47,7 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
                 "HDBaseT"
             }
         );
-        _ui->lensSelector->setEditable(false);
+        //_ui->lensSelector->setEditable(false);
         loadSettings();
         // Setting lens Names
         for(const auto& name : _lensSelectorSlotNames) {
@@ -56,11 +56,15 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         // Checking current status
         _power = true;
         _muted = true;
+        on_avMute_clicked();
+        on_powerSwitch_clicked();
     }
 
 void BeamerFernbedienung::loadSettings() {
     _settings = make_unique<QSettings>();
     _settings->setPath(QSettings::IniFormat, QSettings::UserScope, "settings.ini");
+
+    qDebug() << "read settings: " << _settings->fileName();
     // Read in the Slot names
     int size = _settings->beginReadArray("lensSelectorSlotNames");
     if(_lensSelectorSlotNames.size() < size)
@@ -70,18 +74,44 @@ void BeamerFernbedienung::loadSettings() {
         _lensSelectorSlotNames[i] = _settings->value("Slot").toString();
     }
     _settings->endArray();
+
+    _settings->beginGroup("MainWindow");
+    resize(_settings->value("size", QSize(400, 400)).toSize());
+    move(_settings->value("pos", QPoint(200, 200)).toPoint());
+    _settings->endGroup();
+
+
+
+    _settings->beginGroup("Connection");
+    //_beamerAddress(_settings->value("IP"));
+    //_beamerPort = _settings->value("port");
+    _settings->endGroup();
+
 }
 
 void BeamerFernbedienung::saveSettings() {
     qint8 counter = 0;
+    qDebug() << "write settings: " << _settings->fileName();
     _settings->beginWriteArray("lensSelectorSlotNames");
     for(const auto& name : _lensSelectorSlotNames) {
         _settings->setArrayIndex(counter++);
-        if(_settings->value("Slot").toString() != name and
-           name != "")
+        if(_settings->value("Slot").toString() != name && name != "")
             _settings->setValue("Slot", name);
     }
     _settings->endArray();
+
+
+    _settings->beginGroup("MainWindow");
+    _settings->setValue("size", size());
+    _settings->setValue("pos", pos());
+    _settings->endGroup();
+
+
+    _settings->beginGroup("Connection");
+    _settings->setValue("IP", _beamerAddress.toString());
+    _settings->setValue("port", _beamerPort);
+    _settings->endGroup();
+
 }
 
 void BeamerFernbedienung::establishConnection() {
