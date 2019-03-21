@@ -41,3 +41,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     settings.ini
+
+RESOURCES += \
+    qdarkstyle/style.qrc

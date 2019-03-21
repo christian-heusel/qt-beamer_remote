@@ -13,6 +13,7 @@
 #include <QWidget>
 #include <QObject>
 #include <QVector>
+#include <QFile>
 #include <QMap>
 
 // Includes from the Standard Template Library
@@ -67,7 +68,7 @@ private:
     QString full_addr() const;
     void updateGui();
     void updateVar();
-
+    void loadDarkSkin();
 };
 
 #endif // BEAMERFERNBEDIENUNG_H

@@ -31,6 +31,7 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         )
     {
         _ui->setupUi(this);
+        loadDarkSkin();
         setWindowTitle("Beamerfernbedienung");
         establishConnection();
         // Setting up all inputs
@@ -54,6 +55,17 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         updateGui();
     }
 
+void BeamerFernbedienung::loadDarkSkin() {
+    QFile f(":qdarkstyle/style.qss");
+    if (!f.exists()) {
+        qInfo() << "Unable to set stylesheet, file not found!\n";
+    }
+    else {
+        f.open(QFile::ReadOnly | QFile::Text);
+        QTextStream ts(&f);
+        qApp->setStyleSheet(ts.readAll());
+    }
+}
 void BeamerFernbedienung::updateVar(){
     // Checking current status
     _power = sendCommandGet(_commands["powerSwitch"]).toInt();
