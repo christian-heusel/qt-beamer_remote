@@ -6,7 +6,6 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         _beamerConnection(make_unique<QTcpSocket>(this)),
         _ui(new Ui::BeamerFernbedienung()),
         _beamerAddress("192.168.0.38"),
-        //_beamerAddress("127.0.0.1"),
         _beamerPort(7000),
         _commands(
             {
@@ -45,7 +44,7 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
                 "HDBaseT"
             }
         );
-        //_ui->lensSelector->setEditable(false);
+        _ui->lensSelector->setEditable(false);
         loadSettings();
         // Setting lens Names
         for(const auto& name : _lensSelectorSlotNames) {
@@ -83,13 +82,10 @@ void BeamerFernbedienung::loadSettings() {
     move(_settings->value("pos", QPoint(200, 200)).toPoint());
     _settings->endGroup();
 
-
-
     _settings->beginGroup("Connection");
     //_beamerAddress(_settings->value("IP").toString());
-    _beamerPort = (quint16)_settings->value("port").toUInt();
+    _beamerPort = static_cast<quint16>(_settings->value("port").toUInt());
     _settings->endGroup();
-
 }
 
 void BeamerFernbedienung::saveSettings() {
@@ -103,12 +99,10 @@ void BeamerFernbedienung::saveSettings() {
     }
     _settings->endArray();
 
-
     _settings->beginGroup("MainWindow");
     _settings->setValue("size", size());
     _settings->setValue("pos", pos());
     _settings->endGroup();
-
 
     _settings->beginGroup("Connection");
     _settings->setValue("IP", _beamerAddress.toString());
@@ -120,7 +114,7 @@ void BeamerFernbedienung::saveSettings() {
 void BeamerFernbedienung::establishConnection() {
     _beamerConnection->connectToHost(_beamerAddress, _beamerPort);
     if(_beamerConnection->waitForConnected()) {
-        _connected =true;
+        _connected = true;
         QMessageBox::information(
                 this,
                 tr("Beamerfernbedienung"),
@@ -139,25 +133,6 @@ void BeamerFernbedienung::establishConnection() {
         _ui->reconnectButton->setEnabled(false);
     }
 }
-
-//QString BeamerFernbedienung::readAnswer(){
-//    QByteArray buffer;
-//    buffer.append(_beamerConnection->readAll());
-//    const QString answer = buffer;
-//    #ifdef QT_DEBUG
-//    qInfo() << "DEBUG: answer  <- " << answer;
-//    #endif
-//    // const QStringRef executionStatus(&answer,0,3);
-//    // if(executionStatus.contains("ACK", Qt::CaseInsensitive))
-//    //     qInfo() << "Yay";
-//    // else if (executionStatus.contains("NAK", Qt::CaseInsensitive)) {
-//    //     qInfo() << "Nayy";
-//    // }
-//    // QString number = answer.back();
-//    // int result = number.toInt();
-//    // qInfo() << result << number;
-//    return answer;
-//}
 
 QString BeamerFernbedienung::sendCommandSet(const QString& cmd, const QString& value) {
     QString pre = "*";
@@ -210,7 +185,6 @@ QString BeamerFernbedienung::sendCommandGet(const QString& cmd) {
     QString suf = " ?\r";
     QByteArray data = pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
     if(_beamerConnection->state() == QAbstractSocket::ConnectedState) {
-       // _beamerConnection->write(IntToArray(data.size()));
         _beamerConnection->write(data);
         _beamerConnection->waitForBytesWritten(1000);
 
@@ -259,9 +233,9 @@ void BeamerFernbedienung::updateGui(){
     }
 
     if (_muted) {
-        _ui->avMute->setText("Unmute");
+        _ui->avMute->setText("Bild reaktivieren");
     }else {
-        _ui->avMute->setText("Mute");
+        _ui->avMute->setText("Bild schwarz");
     }
 
     _ui->inputSelector->setCurrentIndex(_inputSelector);

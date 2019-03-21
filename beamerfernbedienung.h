@@ -51,8 +51,6 @@ private:
     QVector<QString> _lensSelectorSlotNames;
     QString lastResponse;
 
-
-
     bool _power;
     bool _muted;
     int _inputSelector;
