@@ -45,21 +45,31 @@ private:
     unique_ptr<QSettings> _settings;
     Ui::BeamerFernbedienung* _ui;
 
-    const QHostAddress _beamerAddress;
-    const quint16 _beamerPort;
+    QHostAddress _beamerAddress;
+    quint16 _beamerPort;
     const QMap<QString,QString> _commands;
     QVector<QString> _lensSelectorSlotNames;
+    QString lastResponse;
+
+
 
     bool _power;
     bool _muted;
+    int _inputSelector;
+    int _lensSelector;
+
     bool _connected;
 
     void establishConnection();
-    void sendCommand(const QString& cmd, const QString& value);
+    QString sendCommandSet(const QString& cmd, const QString& value);
+    QString sendCommandGet(const QString& cmd);
     void loadSettings();
     void saveSettings();
     QString readAnswer();
     QString full_addr() const;
+    void updateGui();
+    void updateVar();
+
 };
 
 #endif // BEAMERFERNBEDIENUNG_H
