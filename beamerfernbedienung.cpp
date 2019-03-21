@@ -18,16 +18,16 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         ),
         _lensSelectorSlotNames(
             {{
-                "Mem 0 - Leinwandbetrieb",
-                "Mem 1 - Max von Mem 0",
-                "Mem 2 - Max unten",
-                "Mem 3 - Max unten",
-                "Mem 4 - Max oben",
-                "Mem 5 - Leinwand Pos Unten",
-                "Mem 6",
+                "Mem 1 - Leinwand oben",
+                "Mem 2",
+                "Mem 3 - Godi unten",
+                "Mem 4 - Godi unten",
+                "Mem 5 - Godi oben",
+                "Mem 6 - Leinwand unten",
                 "Mem 7",
                 "Mem 8",
-                "Mem 9 - Standard -130 DBI",
+                "Mem 9",
+                "Mem 10 - Standard -130 DBI",
             }}
         )
     {
