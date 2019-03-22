@@ -1,20 +1,17 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest an new feature for this project
 title: ''
-labels: ''
-assignees: ''
+labels: feature request
+assignees: TheEbolaDoc
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**What feature are you missing?**
+A short description what the current program can not do.
 
 **Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+A shot description of what you would like the solution to look like.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**How important is the feature to you?**
+very important / important / not so much
