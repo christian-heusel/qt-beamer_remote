@@ -1,7 +1,7 @@
 # What can this program do?
-This program is used to control a Beamer from the
+This program is used to control a Beamer from
 [_DIGITAL PROJECTION_](https://www.digitalprojection.com/emea/)
-Model _"E-Vision 6900"_(tested) or _"Mercury Quad series"_(not tested).
+Model "E-Vision 6900"_(tested)_ or "Mercury Quad series"_(not tested)_.
 
 This application is needed because in our setup the beamer cannot be reached by
 its original remote.
