@@ -13,9 +13,9 @@ most ways you can think about, but I am in no way liable for the functionality
 of the resulting binaries. In addition to that you have to make your changes 
 public again.
 
-Read more about the LGPL-3.0 license
+Read more about the AGPL-3.0 license
 [here](https://choosealicense.com/licenses/agpl-3.0/).
 
-# I have questions/problems with the problem
+# I have questions/problems with the program
 Write me an email [christian@heusel.eu](Mailto:christian@heusel.eu) or open an
 [Issue](https://github.com/TheEbolaDoc/qt-beamer_remote/issues).

@@ -29,6 +29,7 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
                 "Mem 10 - Standard -130 DBI",
             }}
         )
+        // End of the constructur initialization list
     {
         _ui->setupUi(this);
         loadDarkSkin();
@@ -58,13 +59,19 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
 
 void BeamerFernbedienung::loadDarkSkin() {
     QFile f(":qdarkstyle/style.qss");
-    if (!f.exists()) {
-        qInfo() << "Unable to set stylesheet, file not found!\n";
+    if (! f.exists()) {
+        #ifdef QT_DEBUG
+        qInfo() << "Unable to set stylesheet, file not found!";
+        #endif
     }
     else {
         f.open(QFile::ReadOnly | QFile::Text);
         QTextStream ts(&f);
         qApp->setStyleSheet(ts.readAll());
+
+        #ifdef QT_DEBUG
+        qInfo() << "Stylesheet geladen!";
+        #endif
     }
 }
 void BeamerFernbedienung::updateVar(){
@@ -79,7 +86,10 @@ void BeamerFernbedienung::loadSettings() {
     _settings = make_unique<QSettings>();
     _settings->setPath(QSettings::IniFormat, QSettings::UserScope, "settings.ini");
 
-    qDebug() << "read settings: " << _settings->fileName();
+    #ifdef QT_DEBUG
+    qInfo() << "read settings: " << _settings->fileName();
+    #endif
+
     // Read in the Slot names
     int size = _settings->beginReadArray("lensSelectorSlotNames");
     if(_lensSelectorSlotNames.size() < size)
@@ -121,7 +131,6 @@ void BeamerFernbedienung::saveSettings() {
     _settings->setValue("IP", _beamerAddress.toString());
     _settings->setValue("port", _beamerPort);
     _settings->endGroup();
-
 }
 
 void BeamerFernbedienung::establishConnection() {
@@ -159,16 +168,17 @@ QString BeamerFernbedienung::sendCommand(const QString& cmd, const QString& valu
 
     QByteArray data = pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
     if(_beamerConnection->state() == QAbstractSocket::ConnectedState) {
-        // _beamerConnection->write(IntToArray(data.size()));
          _beamerConnection->write(data);
          _beamerConnection->waitForBytesWritten(500);
 
+         #ifdef QT_DEBUG
          qInfo() << data;
+         #endif
+
          QByteArray buffer;
          buffer.clear();
 
-         if (_beamerConnection->waitForReadyRead(500))
-         {
+         if (_beamerConnection->waitForReadyRead(500)) {
              buffer =_beamerConnection->readLine(128);
              qInfo() << buffer;
              lastResponse = buffer;
@@ -178,9 +188,11 @@ QString BeamerFernbedienung::sendCommand(const QString& cmd, const QString& valu
     qInfo() << "DEBUG: command -> " << data;
     #endif
 
-    if ((lastResponse.contains("NACK") | (!lastResponse.contains(cmd))))
-    {
+    if ((lastResponse.contains("NACK") | (!lastResponse.contains(cmd)))) {
+
+        #ifdef QT_DEBUG
         qInfo() << "DEBUG: response NACK ->" << lastResponse;
+        #endif
         //Exception??
         return "";
     }
@@ -188,8 +200,7 @@ QString BeamerFernbedienung::sendCommand(const QString& cmd, const QString& valu
     QRegExp rx("(\\ |\\r)"); //RegEx for ' ' or ',' or '.' or ':' or '\r'
     QStringList query = lastResponse.split(rx);
 
-    foreach(QString s, query)
-    {
+    foreach(QString s, query) {
          qInfo() << "DEBUG: response ACK -> " << s;
     }
     return query[3];
@@ -206,7 +217,8 @@ void BeamerFernbedienung::updateGui(){
 
     if (_muted) {
         _ui->avMute->setText("Bild reaktivieren");
-    }else {
+    }
+    else {
         _ui->avMute->setText("Bild schwarz");
     }
 
