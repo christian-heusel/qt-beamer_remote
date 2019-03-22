@@ -8,11 +8,13 @@ Visit our [church](https://www.gemeinde.oeschingen.elk-wue.de) in
 [Öschingen](https://maps.app.goo.gl/SWZU5).
 
 # Can I use it?
-The sourcecode is licensed under LGPL-3.0, which means, that you can use it in
+The sourcecode is licensed under AGPL-3.0, which means, that you can use it in
 most ways you can think about, but I am in no way liable for the functionality
-of the resulting binaries.
+of the resulting binaries. In addition to that you have to make your changes 
+public again.
+
 Read more about the LGPL-3.0 license
-[here](https://choosealicense.com/licenses/lgpl-3.0/).
+[here](https://choosealicense.com/licenses/agpl-3.0/).
 
 # I have questions/problems with the problem
 Write me an email [christian@heusel.eu](Mailto:christian@heusel.eu) or open an
