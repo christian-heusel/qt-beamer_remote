@@ -10,9 +10,10 @@ Visit our [church](https://www.gemeinde.oeschingen.elk-wue.de) in
 # Can I use it?
 The sourcecode is licensed under LGPL-3.0, which means, that you can use it in
 most ways you can think about, but I am in no way liable for the functionality
-of the resulting binaries. Read more about the license
-[here](https://github.com/TheEbolaDoc/qt-beamer_remote/blob/master/LICENSE).
+of the resulting binaries.
+Read more about the LGPL-3.0 license
+[here](https://choosealicense.com/licenses/lgpl-3.0/).
 
 # I have questions/problems with the problem
-Write me an email([christian@heusel.eu](Mailto:christian@heusel.eu)) or open an
+Write me an email [christian@heusel.eu](Mailto:christian@heusel.eu) or open an
 [Issue](https://github.com/TheEbolaDoc/qt-beamer_remote/issues).
