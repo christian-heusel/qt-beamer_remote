@@ -51,6 +51,7 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         for(const auto& name : _lensSelectorSlotNames) {
             _ui->lensSelector->addItem(name);
         }
+
         updateVar();
         updateGui();
     }
@@ -68,10 +69,10 @@ void BeamerFernbedienung::loadDarkSkin() {
 }
 void BeamerFernbedienung::updateVar(){
     // Checking current status
-    _power = sendCommandGet(_commands["powerSwitch"]).toInt();
-    _muted = sendCommandGet(_commands["avMute"]).toInt();
-    _inputSelector= sendCommandGet(_commands["inputSelector"]).toInt(); ;
-    _lensSelector = sendCommandGet(_commands["lensSelector"]).toInt();;
+    _power = sendCommand(_commands["powerSwitch"]).toInt();
+    _muted = sendCommand(_commands["avMute"]).toInt();
+    _inputSelector= sendCommand(_commands["inputSelector"]).toInt(); ;
+    _lensSelector = sendCommand(_commands["lensSelector"]).toInt();;
 }
 
 void BeamerFernbedienung::loadSettings() {
@@ -146,20 +147,27 @@ void BeamerFernbedienung::establishConnection() {
     }
 }
 
-QString BeamerFernbedienung::sendCommandSet(const QString& cmd, const QString& value) {
+QString BeamerFernbedienung::sendCommand(const QString& cmd, const QString& value) {
+
     QString pre = "*";
-    QString suf = " = " + value + "\r";
+
+    QString suf = " ?\r";
+
+    if (value != nullptr){
+         suf = " = " + value + "\r";
+    }
+
     QByteArray data = pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
     if(_beamerConnection->state() == QAbstractSocket::ConnectedState) {
         // _beamerConnection->write(IntToArray(data.size()));
          _beamerConnection->write(data);
-         _beamerConnection->waitForBytesWritten(1000);
+         _beamerConnection->waitForBytesWritten(500);
 
          qInfo() << data;
          QByteArray buffer;
          buffer.clear();
 
-         if (_beamerConnection->waitForReadyRead(2000))
+         if (_beamerConnection->waitForReadyRead(500))
          {
              buffer =_beamerConnection->readLine(128);
              qInfo() << buffer;
@@ -167,11 +175,8 @@ QString BeamerFernbedienung::sendCommandSet(const QString& cmd, const QString& v
          }
     }
     #ifdef QT_DEBUG
-    qInfo() << "DEBUG: command -> " << cmd;
+    qInfo() << "DEBUG: command -> " << data;
     #endif
-
-    // for first testig only
-    //lastResponse = "ACK *" + cmd +" = " + value + "\r";
 
     if ((lastResponse.contains("NACK") | (!lastResponse.contains(cmd))))
     {
@@ -179,7 +184,6 @@ QString BeamerFernbedienung::sendCommandSet(const QString& cmd, const QString& v
         //Exception??
         return "";
     }
-
 
     QRegExp rx("(\\ |\\r)"); //RegEx for ' ' or ',' or '.' or ':' or '\r'
     QStringList query = lastResponse.split(rx);
@@ -191,50 +195,6 @@ QString BeamerFernbedienung::sendCommandSet(const QString& cmd, const QString& v
     return query[3];
 }
 
-
-QString BeamerFernbedienung::sendCommandGet(const QString& cmd) {
-    QString pre = "*";
-    QString suf = " ?\r";
-    QByteArray data = pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
-    if(_beamerConnection->state() == QAbstractSocket::ConnectedState) {
-        _beamerConnection->write(data);
-        _beamerConnection->waitForBytesWritten(1000);
-
-        qInfo() << data;
-        QByteArray buffer;
-        buffer.clear();
-
-        if (_beamerConnection->waitForReadyRead(2000))
-        {
-            buffer =_beamerConnection->readLine(128);
-            qInfo() << buffer;
-            lastResponse = buffer;
-        }
-    }
-    #ifdef QT_DEBUG
-    qInfo() << "DEBUG: command -> " << cmd;
-    #endif
-
-    // for first testig only
-    //lastResponse = "ACK *power = 0\r";
-
-    if ((lastResponse.contains("NACK") | (!lastResponse.contains(cmd))))
-    {
-        qInfo() << "DEBUG: response NACK ->" << lastResponse;
-        //Exception??
-        return "";
-    }
-
-
-    QRegExp rx("(\\ |\\r)"); //RegEx for ' ' or ',' or '.' or ':' or '\r'
-    QStringList query = lastResponse.split(rx);
-
-    foreach(QString s, query)
-    {
-         qInfo() << "DEBUG: response ACK -> " << s;
-    }
-    return query[3];
-}
 
 void BeamerFernbedienung::updateGui(){
     if(_power) {
@@ -251,20 +211,17 @@ void BeamerFernbedienung::updateGui(){
     }
 
     _ui->inputSelector->setCurrentIndex(_inputSelector);
-
     _ui->lensSelector->setCurrentIndex(_lensSelector);
-
 }
 
 void BeamerFernbedienung::on_avMute_clicked() {
-    _muted = sendCommandSet(_commands["avMute"], QString::number(!_muted)).toInt();
+    _muted = sendCommand(_commands["avMute"], QString::number(!_muted)).toInt();
     updateGui();
 }
 
 void BeamerFernbedienung::on_powerSwitch_clicked() {
-    _power = sendCommandSet(_commands["powerSwitch"], QString::number(!_power)).toInt();
+    _power = sendCommand(_commands["powerSwitch"], QString::number(!_power)).toInt();
     updateGui();
-
 }
 
 void BeamerFernbedienung::on_reconnectButton_clicked() {
@@ -276,7 +233,7 @@ void BeamerFernbedienung::on_reconnectButton_clicked() {
 }
 
 void BeamerFernbedienung::on_inputSelector_activated(int input) {
-    _inputSelector = sendCommandSet(_commands["inputSelector"], QString::number(input)).toInt();
+    _inputSelector = sendCommand(_commands["inputSelector"], QString::number(input)).toInt();
 }
 
 QString BeamerFernbedienung::full_addr() const {
@@ -289,8 +246,7 @@ void BeamerFernbedienung::on_lensSelector_currentTextChanged(const QString& arg1
 }
 
 void BeamerFernbedienung::on_lensSelector_activated(int index) {
-   _lensSelector = sendCommandSet(_commands["lensSelector"],QString::number(index)).toInt();
-
+   _lensSelector = sendCommand(_commands["lensSelector"],QString::number(index)).toInt();
 }
 
 BeamerFernbedienung::~BeamerFernbedienung(){

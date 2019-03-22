@@ -59,9 +59,8 @@ private:
 
     bool _connected;
 
+    QString sendCommand(const QString& cmd, const QString& value=nullptr);
     void establishConnection();
-    QString sendCommandSet(const QString& cmd, const QString& value);
-    QString sendCommandGet(const QString& cmd);
     void loadSettings();
     void saveSettings();
     QString readAnswer();
