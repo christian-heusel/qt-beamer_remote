@@ -1,10 +1,13 @@
 # What can this program do?
-This program is used to control a Beamer from the _"Mercury Quad Series"_ Model
-_"E-Vision 6900"_.
+This program is used to control a Beamer from the
+[_DIGITAL PROJECTION_](https://www.digitalprojection.com/emea/)
+Model _"E-Vision 6900"_(tested) or _"Mercury Quad series"_(not tested).
+
 This application is needed because in our setup the beamer cannot be reached by
 its original remote.
 
-Visit our [church](https://www.gemeinde.oeschingen.elk-wue.de) in 
+# Where
+Feel free to visit our [church](https://www.gemeinde.oeschingen.elk-wue.de) in 
 [Öschingen](https://maps.app.goo.gl/SWZU5).
 
 # Can I use it?
