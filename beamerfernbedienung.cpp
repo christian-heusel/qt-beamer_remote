@@ -12,6 +12,8 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
                 {"avMute", "pic.mute"},
                 {"inputSelector", "input"},
                 {"powerSwitch", "power"},
+                {"brightness", "brightness"},
+                {"contrast", "contrast"},
                 {"lensSelector", "lens.load"}
             }
         ),
@@ -58,7 +60,7 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
     }
 
 void BeamerFernbedienung::loadDarkSkin() {
-    QFile f(":qdarkstyle/style.qss");
+    QFile f("qdarkstyle/style.qss");
     if (! f.exists()) {
         #ifdef QT_DEBUG
         qInfo() << "Unable to set stylesheet, file not found!";
@@ -78,8 +80,10 @@ void BeamerFernbedienung::updateVar(){
     // Checking current status
     _power = sendCommand(_commands["powerSwitch"]).toInt();
     _muted = sendCommand(_commands["avMute"]).toInt();
-    _inputSelector= sendCommand(_commands["inputSelector"]).toInt(); ;
-    _lensSelector = sendCommand(_commands["lensSelector"]).toInt();;
+    _inputSelector= sendCommand(_commands["inputSelector"]).toInt();
+    _lensSelector = sendCommand(_commands["lensSelector"]).toInt();
+    _brightness = sendCommand(_commands["brightness"]).toInt();
+    _contrast = sendCommand(_commands["contrast"]).toInt();
 }
 
 void BeamerFernbedienung::loadSettings() {
@@ -224,6 +228,11 @@ void BeamerFernbedienung::updateGui(){
 
     _ui->inputSelector->setCurrentIndex(_inputSelector);
     _ui->lensSelector->setCurrentIndex(_lensSelector);
+    _ui->horizontalSlider_Contrast->setValue(_contrast);
+    _ui->horizontalSlider_Contrast->setToolTip( QString::number(_contrast));
+
+    _ui->horizontalSlider_Brightness->setValue(_brightness);
+    _ui->horizontalSlider_Brightness->setToolTip( QString::number(_brightness));
 }
 
 void BeamerFernbedienung::on_avMute_clicked() {
@@ -264,4 +273,18 @@ void BeamerFernbedienung::on_lensSelector_activated(int index) {
 BeamerFernbedienung::~BeamerFernbedienung(){
     saveSettings();
     delete _ui;
+}
+
+void BeamerFernbedienung::on_horizontalSlider_Brightness_valueChanged(int value)
+{
+    _brightness = sendCommand(_commands["brightness"], QString::number(value)).toInt();
+    _ui->horizontalSlider_Brightness->setToolTip( QString::number(_brightness));
+}
+
+
+
+void BeamerFernbedienung::on_horizontalSlider_Contrast_valueChanged(int value)
+{
+    _contrast = sendCommand(_commands["contrast"], QString::number(value)).toInt();
+    _ui->horizontalSlider_Contrast->setToolTip( QString::number(_contrast));
 }

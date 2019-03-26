@@ -41,6 +41,10 @@ private slots:
     void on_lensSelector_currentTextChanged(const QString &arg1);
     void on_lensSelector_activated(int index);
 
+    void on_horizontalSlider_Brightness_valueChanged(int value);
+
+    void on_horizontalSlider_Contrast_valueChanged(int value);
+
 private:
     unique_ptr<QTcpSocket> _beamerConnection;
     unique_ptr<QSettings> _settings;
@@ -56,6 +60,8 @@ private:
     bool _muted;
     int _inputSelector;
     int _lensSelector;
+    int _brightness;
+    int _contrast;
 
     bool _connected;
 
