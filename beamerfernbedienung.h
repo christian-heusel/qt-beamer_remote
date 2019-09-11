@@ -56,13 +56,21 @@ private:
     QVector<QString> _lensSelectorSlotNames;
     QString lastResponse;
     QTimer *_timer;
-    bool _power;
+    //bool _power;
     bool _muted;
     int _inputSelector;
     int _lensSelector;
     int _brightness;
     int _contrast;
     int _timeoutTimer;
+    enum
+    {
+        unknown,
+        powerup,
+        poweron,
+        powerdown,
+        poweroff
+    }status;
 
     bool _connected;
 

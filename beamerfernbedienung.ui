@@ -305,7 +305,7 @@
           <bool>true</bool>
          </property>
          <property name="text">
-          <string>NaN</string>
+          <string>avMute</string>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -376,7 +376,7 @@
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Versucht erneut eine Verbindung herzustellen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Reconnect</string>
+        <string>Neu verbinden</string>
        </property>
       </widget>
      </item>
