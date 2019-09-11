@@ -1,11 +1,14 @@
-#include "beamerfernbedienung.h"
+﻿#include "beamerfernbedienung.h"
+#include <QThread>
+#include <QTimer>
 
 BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
     :
         QWidget(parent),
         _beamerConnection(make_unique<QTcpSocket>(this)),
         _ui(new Ui::BeamerFernbedienung()),
-        _beamerAddress("192.168.0.38"),
+        //_beamerAddress("192.168.0.38"),
+        _beamerAddress("127.0.0.1"),
         _beamerPort(7000),
         _commands(
             {
@@ -34,8 +37,16 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         // End of the constructur initialization list
     {
         _ui->setupUi(this);
+        _ui->label_Status->setText(full_addr());
+        _timer = new QTimer();
+        _timer->stop();
+        _timer->setInterval(1000);
+        connect(_timer, SIGNAL(timeout()), this,SLOT(yourSlot()));
         loadDarkSkin();
-        setWindowTitle("Beamerfernbedienung");
+        QString version = "V1.1.0";
+        setWindowTitle("Beamerfernbedienung " + version);
+
+        _ui->label->setText("Beamerfernbedienung " + version);
         establishConnection();
         // Setting up all inputs
         _ui->inputSelector->addItems(
@@ -54,7 +65,8 @@ BeamerFernbedienung::BeamerFernbedienung(QWidget *parent)
         for(const auto& name : _lensSelectorSlotNames) {
             _ui->lensSelector->addItem(name);
         }
-
+        _lensSelector = 0;
+        disableGui();
         updateVar();
         updateGui();
     }
@@ -79,11 +91,14 @@ void BeamerFernbedienung::loadDarkSkin() {
 void BeamerFernbedienung::updateVar(){
     // Checking current status
     _power = sendCommand(_commands["powerSwitch"]).toInt();
-    _muted = sendCommand(_commands["avMute"]).toInt();
-    _inputSelector= sendCommand(_commands["inputSelector"]).toInt();
-    _lensSelector = sendCommand(_commands["lensSelector"]).toInt();
-    _brightness = sendCommand(_commands["brightness"]).toInt();
-    _contrast = sendCommand(_commands["contrast"]).toInt();
+
+    if (_power)
+    {
+        _muted = sendCommand(_commands["avMute"]).toInt();
+        _inputSelector= sendCommand(_commands["inputSelector"]).toInt();
+        _brightness = sendCommand(_commands["brightness"]).toInt();
+        _contrast = sendCommand(_commands["contrast"]).toInt();
+    }
 }
 
 void BeamerFernbedienung::loadSettings() {
@@ -171,10 +186,14 @@ QString BeamerFernbedienung::sendCommand(const QString& cmd, const QString& valu
     }
 
     QByteArray data = pre.toUtf8() + cmd.toUtf8() + suf.toUtf8();
+
+    lastResponse.clear();
     if(_beamerConnection->state() == QAbstractSocket::ConnectedState) {
+        _beamerConnection->readAll();
          _beamerConnection->write(data);
          _beamerConnection->waitForBytesWritten(500);
 
+       // QThread::msleep(500);
          #ifdef QT_DEBUG
          qInfo() << data;
          #endif
@@ -182,11 +201,11 @@ QString BeamerFernbedienung::sendCommand(const QString& cmd, const QString& valu
          QByteArray buffer;
          buffer.clear();
 
-         if (_beamerConnection->waitForReadyRead(500)) {
+         _beamerConnection->waitForReadyRead(3000);
              buffer =_beamerConnection->readLine(128);
              qInfo() << buffer;
              lastResponse = buffer;
-         }
+
     }
     #ifdef QT_DEBUG
     qInfo() << "DEBUG: command -> " << data;
@@ -211,41 +230,114 @@ QString BeamerFernbedienung::sendCommand(const QString& cmd, const QString& valu
 }
 
 
+void BeamerFernbedienung::disableGui(){
+
+    _ui->powerSwitch->setEnabled(false);
+    _ui->avMute->setEnabled(false);
+    _ui->label_2->setEnabled(false);
+    _ui->label_3->setEnabled(false);
+    _ui->lensSelector->setEnabled(false);
+    _ui->inputSelector->setEnabled(false);
+    _ui->horizontalSlider_Contrast->setEnabled(false);
+    _ui->horizontalSlider_Brightness->setEnabled(false);
+}
 void BeamerFernbedienung::updateGui(){
+
+    _ui->powerSwitch->setEnabled(true);
+
     if(_power) {
         _ui->powerSwitch->setText("Ausschalten");
+
+        _ui->label_2->setEnabled(true);
+        _ui->label_3->setEnabled(true);
+        _ui->avMute->setEnabled(true);
+        _ui->lensSelector->setEnabled(true);
+        _ui->inputSelector->setEnabled(true);
+        _ui->horizontalSlider_Contrast->setEnabled(true);
+        _ui->horizontalSlider_Brightness->setEnabled(true);
+
+
+        if (_muted) {
+            _ui->avMute->setText("Bild reaktivieren");
+        }
+        else {
+            _ui->avMute->setText("Bild schwarz");
+        }
+
+        _ui->inputSelector->setCurrentIndex(_inputSelector);
+        _ui->lensSelector->setCurrentIndex(_lensSelector);
+        _ui->horizontalSlider_Contrast->setValue(_contrast);
+        _ui->horizontalSlider_Contrast->setToolTip( QString::number(_contrast));
+
+        _ui->horizontalSlider_Brightness->setValue(_brightness);
+        _ui->horizontalSlider_Brightness->setToolTip( QString::number(_brightness));
     }
     else {
         _ui->powerSwitch->setText("Anschalten");
     }
 
-    if (_muted) {
-        _ui->avMute->setText("Bild reaktivieren");
-    }
-    else {
-        _ui->avMute->setText("Bild schwarz");
-    }
-
-    _ui->inputSelector->setCurrentIndex(_inputSelector);
-    _ui->lensSelector->setCurrentIndex(_lensSelector);
-    _ui->horizontalSlider_Contrast->setValue(_contrast);
-    _ui->horizontalSlider_Contrast->setToolTip( QString::number(_contrast));
-
-    _ui->horizontalSlider_Brightness->setValue(_brightness);
-    _ui->horizontalSlider_Brightness->setToolTip( QString::number(_brightness));
 }
 
 void BeamerFernbedienung::on_avMute_clicked() {
+    disableGui();
     _muted = sendCommand(_commands["avMute"], QString::number(!_muted)).toInt();
     updateGui();
 }
 
+ void BeamerFernbedienung::yourSlot(){
+
+     if (--_timeoutTimer <= 0)
+     {
+        _ui->label_Status->setText("");
+        qApp->processEvents();
+        _timer->stop();
+        //qInfo() << "DEBUG: Timer abgelaufen";
+        updateVar();
+        updateGui();
+     }
+     else
+     {
+         QString s ;
+
+         if (_power)
+         {
+             s = "Beamer wird gestartet: " ;
+         }
+         else
+         {
+             s = "Beamer schaltet ab: " ;
+         }
+         s.append(QString::number(_timeoutTimer));
+         s.append(" sec");
+         _ui->label_Status->setText(s);
+
+         //qInfo() << "DEBUG: Timer " << _timeoutTimer << " sec";
+         //QTimer::singleShot(1000, this, SLOT(yourSlot()));
+
+     }
+}
 void BeamerFernbedienung::on_powerSwitch_clicked() {
+    disableGui();
     _power = sendCommand(_commands["powerSwitch"], QString::number(!_power)).toInt();
-    updateGui();
+    _timeoutTimer = 10;
+
+    QString s ;
+    if (_power)
+    {
+        s = "Beamer wird gestartet: " ;
+    }
+    else
+    {
+        s = "Beamer schaltet ab: " ;
+    }
+    s.append(QString::number(_timeoutTimer));
+    s.append(" sec");
+    _ui->label_Status->setText(s);
+    _timer->start();
 }
 
 void BeamerFernbedienung::on_reconnectButton_clicked() {
+    disableGui();
     saveSettings();
     establishConnection();
 
@@ -254,7 +346,9 @@ void BeamerFernbedienung::on_reconnectButton_clicked() {
 }
 
 void BeamerFernbedienung::on_inputSelector_activated(int input) {
+disableGui();
     _inputSelector = sendCommand(_commands["inputSelector"], QString::number(input)).toInt();
+updateGui();
 }
 
 QString BeamerFernbedienung::full_addr() const {

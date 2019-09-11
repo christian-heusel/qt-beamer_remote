@@ -55,13 +55,14 @@ private:
     const QMap<QString,QString> _commands;
     QVector<QString> _lensSelectorSlotNames;
     QString lastResponse;
-
+    QTimer *_timer;
     bool _power;
     bool _muted;
     int _inputSelector;
     int _lensSelector;
     int _brightness;
     int _contrast;
+    int _timeoutTimer;
 
     bool _connected;
 
@@ -71,9 +72,12 @@ private:
     void saveSettings();
     QString readAnswer();
     QString full_addr() const;
+     void disableGui();
     void updateGui();
     void updateVar();
     void loadDarkSkin();
+public slots:
+    void yourSlot();
 };
 
 #endif // BEAMERFERNBEDIENUNG_H
