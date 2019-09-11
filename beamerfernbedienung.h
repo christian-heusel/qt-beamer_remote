@@ -55,7 +55,7 @@ private:
     const QMap<QString,QString> _commands;
     QVector<QString> _lensSelectorSlotNames;
     QString lastResponse;
-    QTimer *_timer;
+    unique_ptr<QTimer> _timer;
     //bool _power;
     bool _muted;
     int _inputSelector;
@@ -63,14 +63,13 @@ private:
     int _brightness;
     int _contrast;
     int _timeoutTimer;
-    enum
-    {
+    enum PowerStatus{
         unknown,
         powerup,
         poweron,
         powerdown,
         poweroff
-    }status;
+    } status;
 
     bool _connected;
 
@@ -80,10 +79,11 @@ private:
     void saveSettings();
     QString readAnswer();
     QString full_addr() const;
-     void disableGui();
+    void disableGui();
     void updateGui();
     void updateVar();
     void loadDarkSkin();
+
 public slots:
     void yourSlot();
 };
