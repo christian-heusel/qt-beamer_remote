@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>280</width>
+    <width>310</width>
     <height>400</height>
    </size>
   </property>
@@ -51,7 +51,7 @@
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>90</height>
+         <height>60</height>
         </size>
        </property>
        <property name="font">
@@ -295,6 +295,14 @@
            <height>30</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Source Code Pro Semibold</family>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>+</string>
          </property>
@@ -313,6 +321,15 @@
            <width>30</width>
            <height>30</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Source Code Pro Semibold</family>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
          </property>
          <property name="text">
           <string>-</string>
@@ -370,6 +387,14 @@
            <height>30</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Source Code Pro Semibold</family>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>+</string>
          </property>
@@ -388,6 +413,14 @@
            <width>30</width>
            <height>30</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Source Code Pro Semibold</family>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
          </property>
          <property name="text">
           <string>-</string>
@@ -434,6 +467,18 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>30</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>30</height>
+          </size>
          </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Aktiviert die Projektion eines schwarzen Bildes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

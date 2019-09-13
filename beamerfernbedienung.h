@@ -45,6 +45,11 @@ private slots:
 
     void on_horizontalSlider_Contrast_valueChanged(int value);
 
+    void on_focus_plus_clicked();
+    void on_focus_minus_clicked();
+
+    void on_zoom_plus_clicked();
+    void on_zoom_minus_clicked();
 private:
     unique_ptr<QTcpSocket> _beamerConnection;
     unique_ptr<QSettings> _settings;
@@ -52,7 +57,7 @@ private:
 
     QHostAddress _beamerAddress;
     quint16 _beamerPort;
-    const QMap<QString,QString> _commands;
+    const QMap<QString, QString> _commands;
     QVector<QString> _lensSelectorSlotNames;
     QString lastResponse;
     unique_ptr<QTimer> _timer;
@@ -70,10 +75,17 @@ private:
         powerdown,
         poweroff
     } status;
+    enum CommandType{
+        question,
+        exec,
+        set,
+    };
 
     bool _connected;
 
-    QString sendCommand(const QString& cmd, const QString& value=nullptr);
+    QString sendCommand(const QString& cmd,
+                        CommandType ctype = CommandType::question,
+                        const QString& value = nullptr);
     void establishConnection();
     void loadSettings();
     void saveSettings();
