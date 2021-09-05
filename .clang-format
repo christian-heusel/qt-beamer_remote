@@ -33,6 +33,9 @@ Standard: Cpp11
 TabWidth: '4'
 UseTab: Never
 AccessModifierOffset: -4
-ColumnLimit: 120
+ColumnLimit: 80
+AlignAfterOpenBracket: Align
+BinPackArguments: true
+BinPackParameters: false
 
 ...

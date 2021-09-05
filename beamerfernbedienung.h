@@ -5,32 +5,32 @@
 #include "ui_beamerfernbedienung.h"
 
 // QT includes
-#include <QtNetwork/QHostAddress>
-#include <QtNetwork/QTcpSocket>
-#include <QMessageBox>
-#include <QSettings>
 #include <QComboBox>
-#include <QWidget>
-#include <QObject>
-#include <QVector>
 #include <QFile>
 #include <QMap>
+#include <QMessageBox>
+#include <QObject>
+#include <QSettings>
+#include <QVector>
+#include <QWidget>
+#include <QtNetwork/QHostAddress>
+#include <QtNetwork/QTcpSocket>
 
 // Includes from the Standard Template Library
 #include <memory>
 
-using std::unique_ptr;
 using std::make_unique;
+using std::unique_ptr;
 
 namespace Ui {
-    class BeamerFernbedienung;
+class BeamerFernbedienung;
 }
 
 class BeamerFernbedienung : public QWidget {
     Q_OBJECT
 
 public:
-    explicit BeamerFernbedienung(QWidget *parent = nullptr);
+    explicit BeamerFernbedienung(QWidget* parent = nullptr);
     virtual ~BeamerFernbedienung();
 
 private slots:
@@ -38,7 +38,7 @@ private slots:
     void on_powerSwitch_clicked();
     void on_inputSelector_activated(int input);
     void on_reconnectButton_clicked();
-    void on_lensSelector_currentTextChanged(const QString &arg1);
+    void on_lensSelector_currentTextChanged(const QString& arg1);
     void on_lensSelector_activated(int index);
 
     void on_horizontalSlider_Brightness_valueChanged(int value);
@@ -50,6 +50,7 @@ private slots:
 
     void on_zoom_plus_clicked();
     void on_zoom_minus_clicked();
+
 private:
     unique_ptr<QTcpSocket> _beamerConnection;
     unique_ptr<QSettings> _settings;
@@ -61,21 +62,22 @@ private:
     QVector<QString> _lensSelectorSlotNames;
     QString lastResponse;
     unique_ptr<QTimer> _timer;
-    //bool _power;
+    // bool _power;
     bool _muted;
     int _inputSelector;
     int _lensSelector;
     int _brightness;
     int _contrast;
     int _timeoutTimer;
-    enum PowerStatus{
-        unknown,
-        powerup,
-        poweron,
-        powerdown,
-        poweroff
+
+    enum PowerStatus {
+        unknown,    //
+        powerup,    //
+        poweron,    //
+        powerdown,  //
+        poweroff    //
     } status;
-    enum CommandType{
+    enum CommandType {
         question,
         exec,
         set,
@@ -100,4 +102,4 @@ public slots:
     void yourSlot();
 };
 
-#endif // BEAMERFERNBEDIENUNG_H
+#endif  // BEAMERFERNBEDIENUNG_H
